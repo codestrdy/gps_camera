@@ -1,7 +1,9 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:gps_camera/extensions/extention.dart';
 import 'package:gps_camera/models/geotagging.dart';
 import 'package:gps_camera/providers/geotagging_controller.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
@@ -31,7 +33,6 @@ class GCMap extends StatelessWidget {
   Widget build(BuildContext context) {
     var loading = Center(child: CircularProgressIndicator());
     return Container(
-      width: 108,
       clipBehavior: Clip.hardEdge,
       decoration: BoxDecoration(borderRadius: BorderRadius.circular(8)),
       child: AspectRatio(aspectRatio: 1, child: position == null ? loading : map(position!)),
@@ -75,31 +76,60 @@ class _LocationTagData extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      spacing: 8,
-      children: [
-        GCMap(position: data.position),
-        Expanded(
-          child: Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(color: Colors.black45, borderRadius: BorderRadius.circular(8)),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              spacing: 2,
-              children: [
-                Text(
-                  showPlacemark().$1 ?? '',
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.white),
-                ),
-                Text(showPlacemark().$2, style: TextStyle(fontSize: 12, color: Colors.white)),
-                if (data.additionalInfo != null)
-                  Text(data.additionalInfo ?? '', style: TextStyle(fontSize: 12, color: Colors.white)),
-              ],
+    final now = DateTime.now();
+    return GestureDetector(
+      onTap: () {
+        if (kDebugMode) {
+          debugPrint(data.address?.toString());
+        }
+      },
+      child: Row(
+        spacing: 8,
+        children: [
+          Expanded(flex: 1, child: GCMap(position: data.position)),
+          Expanded(
+            flex: 3,
+            child: Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Colors.black45,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    showPlacemark().$1 ?? '',
+                    style: TextStyle(
+                      fontSize: 11.sp(context),
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
+                  ),
+                  Text(
+                    showPlacemark().$2,
+                    style: TextStyle(fontSize: 10.sp(context), color: Colors.white),
+                  ),
+                  Text(
+                    'Lat ${data.position?.latitude ?? 0}° Long ${data.position?.longitude ?? 0}°',
+                    style: TextStyle(fontSize: 10.sp(context), color: Colors.white),
+                  ),
+                  Text(
+                    '${now.formatted} ${now.timeZoneName}',
+                    style: TextStyle(fontSize: 10.sp(context), color: Colors.white),
+                  ),
+                  if (data.additionalInfo != null)
+                    Text(
+                      data.additionalInfo ?? '',
+                      style: TextStyle(fontSize: 10.sp(context), color: Colors.white),
+                    ),
+                ],
+              ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -109,8 +139,8 @@ class _LocationTagData extends StatelessWidget {
       return (null, 'Lokasi Tidak Ditemukan');
     }
     return (
-      '${p.locality}, ${p.administrativeArea}, ${p.country}',
-      '${p.name}, ${p.thoroughfare}, ${p.subLocality}, ${p.locality}, ${p.subAdministrativeArea}, ${p.administrativeArea} ${p.postalCode}, ${p.country}',
+      '${p.locality!.replaceAll('Kecamatan ', '')}, ${p.administrativeArea}, ${p.country}',
+      '${p.street!.replaceAll('Jalan', 'Jl.')}, ${p.subLocality}, ${p.locality!.replaceAll('Kecamatan', 'Kec.')}, ${p.subAdministrativeArea}, ${p.administrativeArea} (${p.postalCode}), ${p.country}',
     );
   }
 }
@@ -127,12 +157,18 @@ class _LocationTagLoading extends StatelessWidget {
           Container(
             height: 108,
             width: 108,
-            decoration: BoxDecoration(color: Colors.black45, borderRadius: BorderRadius.circular(8)),
+            decoration: BoxDecoration(
+              color: Colors.black45,
+              borderRadius: BorderRadius.circular(8),
+            ),
           ),
           Expanded(
             child: Container(
               padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(color: Colors.black45, borderRadius: BorderRadius.circular(8)),
+              decoration: BoxDecoration(
+                color: Colors.black45,
+                borderRadius: BorderRadius.circular(8),
+              ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -140,7 +176,11 @@ class _LocationTagLoading extends StatelessWidget {
                 children: [
                   Text(
                     'No Location for this Widget',
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.white),
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
                   ),
                   Text(
                     'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque tristique diam enim, eu convallis ex scelerisque eget. Interdum et malesuada.',

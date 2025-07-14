@@ -1,7 +1,8 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:gps_camera/widgets/location_tag.dart';
+import 'package:gps_camera/widgets/camera.dart';
 
 import 'services/location_service.dart';
 
@@ -9,6 +10,11 @@ List<CameraDescription> cameras = [];
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
 
   cameras = await availableCameras();
   await LocationService.isLocationEnabled();
@@ -21,7 +27,7 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(home: HomePage());
+    return MaterialApp(debugShowCheckedModeBanner: false, home: const HomePage());
   }
 }
 
@@ -30,11 +36,6 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Center(child: LocationTag()),
-      ),
-    );
+    return GeoCamera();
   }
 }
