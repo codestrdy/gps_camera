@@ -96,10 +96,6 @@ class _CaptureWidgetExampleState extends ConsumerState<CaptureWidgetExample> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Widget captured and saved to: ${file.path}')),
         );
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Failed to capture widget')),
-        );
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(

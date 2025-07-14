@@ -27,7 +27,11 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(debugShowCheckedModeBanner: false, home: const HomePage());
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData.from(colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.deepOrange)),
+      home: const HomePage(),
+    );
   }
 }
 

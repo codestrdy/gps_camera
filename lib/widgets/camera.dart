@@ -4,6 +4,7 @@ import 'dart:math' show pi;
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:gps_camera/extensions/extention.dart';
 import 'package:gps_camera/main.dart';
 import 'package:gps_camera/widgets/location_tag.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
@@ -97,15 +98,78 @@ class _GeoCameraState extends State<GeoCamera> with WidgetsBindingObserver {
           children: [
             Align(alignment: Alignment.center, child: CameraPreview(controller!)),
             Positioned(
-              bottom: 8,
+              bottom: context.screenSize.height * .16,
               left: 8,
               right: 8,
               child: Transform.translate(
-                offset: Offset(0, isLandscape ? -200 : 0),
+                offset: Offset(
+                  isLandscape ? -context.screenSize.height * .16 : 0,
+                  isLandscape ? -context.screenSize.width * .37 : 0,
+                ),
                 child: Transform.rotate(angle: isLandscape ? pi / 2 : 0, child: LocationTag()),
               ),
             ),
+            Positioned.fill(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    height: context.screenSize.height * .12,
+                    color: Colors.black,
+                    padding: EdgeInsets.only(top: MediaQuery.viewPaddingOf(context).top),
+                    child: Center(child: Icon(IconsaxPlusBold.flash_slash, color: Colors.white)),
+                  ),
+                  Container(
+                    height: context.screenSize.height * .15,
+                    width: context.screenSize.width,
+                    padding: EdgeInsets.fromLTRB(
+                      24,
+                      24,
+                      24,
+                      24 + MediaQuery.viewPaddingOf(context).bottom,
+                    ),
+                    color: Colors.black,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        SizedBox(
+                          height: 44,
+                          width: 44,
+                          child: Icon(IconsaxPlusLinear.refresh_2, size: 36, color: Colors.white),
+                        ),
+                        _ShutterButton(onPressed: () {}),
+                        Container(height: 44, width: 44, color: Colors.white38),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ShutterButton extends StatelessWidget {
+  const _ShutterButton({this.onPressed});
+
+  final VoidCallback? onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkResponse(
+      onTap: onPressed,
+      child: Container(
+        height: 64,
+        width: 64,
+        padding: EdgeInsets.all(4),
+        decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.orange),
+        child: Container(
+          height: 64,
+          width: 64,
+          decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.white),
         ),
       ),
     );
