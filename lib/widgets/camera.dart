@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math' show pi;
 
 import 'package:camera/camera.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gps_camera/extensions/extention.dart';
@@ -20,7 +21,6 @@ class GeoCamera extends StatefulWidget {
 class _GeoCameraState extends State<GeoCamera> with WidgetsBindingObserver {
   CameraController? controller;
 
-  final isLoading = ValueNotifier(false);
   final flashMode = ValueNotifier(FlashMode.off);
   late StreamSubscription<AccelerometerEvent> _accelerometerSubscription;
   bool isLandscape = false;
@@ -137,7 +137,7 @@ class _GeoCameraState extends State<GeoCamera> with WidgetsBindingObserver {
                           width: 44,
                           child: Icon(IconsaxPlusLinear.refresh_2, size: 36, color: Colors.white),
                         ),
-                        _ShutterButton(onPressed: () {}),
+                        _ShutterButton(onPressed: () async {}),
                         Container(height: 44, width: 44, color: Colors.white38),
                       ],
                     ),
@@ -152,26 +152,29 @@ class _GeoCameraState extends State<GeoCamera> with WidgetsBindingObserver {
   }
 }
 
+final _isLoading = ValueNotifier(false);
+
 class _ShutterButton extends StatelessWidget {
   const _ShutterButton({this.onPressed});
 
-  final VoidCallback? onPressed;
+  final AsyncCallback? onPressed;
 
   @override
   Widget build(BuildContext context) {
-    return InkResponse(
-      onTap: onPressed,
-      child: Container(
-        height: 64,
-        width: 64,
-        padding: EdgeInsets.all(4),
-        decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.orange),
-        child: Container(
-          height: 64,
-          width: 64,
-          decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.white),
-        ),
-      ),
+    return ValueListenableBuilder(
+      valueListenable: _isLoading,
+      builder: (context, value, child) {
+        return InkResponse(
+          onTap: onPressed,
+          child: Container(
+            padding: EdgeInsets.all(4),
+            decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.orange),
+            child: Container(
+              decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.white),
+            ),
+          ),
+        );
+      },
     );
   }
 }
