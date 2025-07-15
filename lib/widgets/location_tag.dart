@@ -10,6 +10,8 @@ import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
+final GlobalKey locationTagKey = GlobalKey();
+
 class LocationTag extends ConsumerWidget {
   const LocationTag({super.key});
 
