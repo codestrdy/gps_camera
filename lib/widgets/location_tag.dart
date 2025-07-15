@@ -8,7 +8,6 @@ import 'package:gps_camera/models/geotagging.dart';
 import 'package:gps_camera/providers/geotagging_controller.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:skeletonizer/skeletonizer.dart';
 
 final GlobalKey locationTagKey = GlobalKey();
 
@@ -21,7 +20,7 @@ class LocationTag extends ConsumerWidget {
     return switch (geoTagging) {
       AsyncData(:final value) => _LocationTagData(data: value),
       AsyncError() => const SizedBox.shrink(),
-      _ => const _LocationTagLoading(),
+      _ => const SizedBox.shrink(),
     };
   }
 }
@@ -143,57 +142,6 @@ class _LocationTagData extends StatelessWidget {
     return (
       '${p.locality!.replaceAll('Kecamatan ', '')}, ${p.administrativeArea}, ${p.country}',
       '${p.street!.replaceAll('Jalan', 'Jl.')}, ${p.subLocality}, ${p.locality!.replaceAll('Kecamatan', 'Kec.')}, ${p.subAdministrativeArea}, ${p.administrativeArea} (${p.postalCode}), ${p.country}',
-    );
-  }
-}
-
-class _LocationTagLoading extends StatelessWidget {
-  const _LocationTagLoading();
-
-  @override
-  Widget build(BuildContext context) {
-    return Skeletonizer(
-      child: Row(
-        spacing: 8,
-        children: [
-          Container(
-            height: 108,
-            width: 108,
-            decoration: BoxDecoration(
-              color: Colors.black45,
-              borderRadius: BorderRadius.circular(8),
-            ),
-          ),
-          Expanded(
-            child: Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: Colors.black45,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                spacing: 2,
-                children: [
-                  Text(
-                    'No Location for this Widget',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
-                    ),
-                  ),
-                  Text(
-                    'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque tristique diam enim, eu convallis ex scelerisque eget. Interdum et malesuada.',
-                    style: TextStyle(fontSize: 12, color: Colors.white),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
     );
   }
 }
