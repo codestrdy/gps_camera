@@ -15,6 +15,7 @@ import 'package:gps_camera/utils/widget_to_image.dart';
 import 'package:gps_camera/widgets/location_tag.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:image/image.dart' as img;
+import 'package:native_storage/native_storage.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 
 class GeoCamera extends StatefulWidget {
@@ -26,6 +27,7 @@ class GeoCamera extends StatefulWidget {
 
 class _GeoCameraState extends State<GeoCamera> with WidgetsBindingObserver {
   CameraController? controller;
+  final storage = NativeStorage();
 
   final flashMode = ValueNotifier(FlashMode.off);
   final file = ValueNotifier<File?>(null);
@@ -52,6 +54,9 @@ class _GeoCameraState extends State<GeoCamera> with WidgetsBindingObserver {
             debugPrint(e.toString());
           });
     }
+    final latestImage = storage.read('geoImage');
+    if (latestImage == null) return;
+    file.value = File(latestImage);
   }
 
   @override
@@ -242,6 +247,7 @@ class _GeoCameraState extends State<GeoCamera> with WidgetsBindingObserver {
       fileName: 'geo_image_${DateTime.now().toIso8601String()}.jpg',
     );
     if (newFile == null) return;
+    storage.write('geoImage', newFile.path);
     file.value = newFile;
   }
 }
